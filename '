@@ -1,0 +1,25 @@
+#!/bin/python3
+import pygame as pg
+import os, sys
+from math import *
+#only for debuging remove in release
+from pprint import pprint
+
+def render(world, bg):
+    pass
+
+if __name__== '__main__':
+    #TODO: import different maps with if statement
+    from maps.map_1 import *
+
+    print(world)
+    print(bg)
+
+    pg.init()
+    size= width, height= 1000, 500
+    display= pg.display.set_mode(size)
+
+    while True:
+        for event in pg.event.get():
+            if event.type== pg.QUIT: sys.exit()
+        render(world, bg)
