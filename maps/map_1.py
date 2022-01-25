@@ -29,5 +29,10 @@ world= [
         {'pos': {'x': 0+ textures['grass'].get_width()* 2, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
         {'pos': {'x': 0+ textures['grass'].get_width()* 3, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
         {'pos': {'x': 0+ textures['grass'].get_width()* 4, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 5, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 6, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 7, 'y': 500- 80- 100}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 7, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
+
         {'pos': {'x': 0, 'y': 500- 80- 64}, 'texture': textures['player_normal1'], 'obj_class': 'player'},
         ]
