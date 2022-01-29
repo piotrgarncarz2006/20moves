@@ -1,6 +1,7 @@
 # this file should be imported depending on current/selected map/level to file game.py
 
 import pygame as pg
+from settings import *
 # only for debuging remove in release
 from pprint import pprint
 
@@ -24,15 +25,15 @@ textures= {key: load_img(val, scale) for key, val in sources.items()}
 
 # every object on this map
 world= [
-        {'pos': {'x': 0, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width(), 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 2, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 3, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 4, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 5, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 6, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 7, 'y': 500- 80- 100}, 'texture': textures['grass'], 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 7, 'y': 500- 80}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0, 'y': h- 50}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 2, 'y': h- 50}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 3, 'y': h- 50}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 4, 'y': h- 50}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 5, 'y': h- 50}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 6, 'y': h- 50}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 7, 'y': h- 50- 100}, 'texture': textures['grass'], 'obj_class': 'grass'},
+        {'pos': {'x': 0+ textures['grass'].get_width()* 7, 'y': h- 50}, 'texture': textures['grass'], 'obj_class': 'grass'},
 
-        {'pos': {'x': 0, 'y': 500- 80- 64}, 'texture': textures['player_normal1'], 'obj_class': 'player'},
+        {'pos': {'x': 0, 'y': h- 34- 64}, 'texture': textures['player_normal1'], 'obj_class': 'player'},
         ]

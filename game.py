@@ -5,6 +5,7 @@
 import pygame as pg
 import os, sys
 from math import *
+from settings import *
 # only for debuging remove in release
 from pprint import pprint
 
@@ -13,11 +14,12 @@ from maps.map_1 import * # provides world, sources, bg, scale, textures
 
 pg.init() # allows to use pygame methods
 font= pg.font.SysFont('monospace', 24)
-w, h= 1000, 500 # size of window
 display= pg.display.set_mode((w, h)) # creates window
 clock = pg.time.Clock() # clock to limit fps
 fps= 60 # fps limit
 moves_left= 20 # how many moves can you make
+minimum_distance_from_border= 100 # minimum distance of player to screen border before viewport moves
+viewport_movement_value= 400 # value by which viewport moves when distance from screen border is lesser than minimum_distance_from_border. This value can be negative or positive depending on from which border distance is lesser than minimum_distance_from_border
 
 # every event that changes something on game map located in world list. Format of event_queue: [ { (text) 'action', (text) 'target', (int) 'frames', additional arguments } ] where frames is on how many frames event will execute this values is decremented every frame by event_handler()
 event_queue= []
@@ -50,6 +52,47 @@ def move(obj_class, speed_x, speed_y):
         if e['obj_class']== obj_class:
             e['pos']['x']+= speed_x
             e['pos']['y']+= speed_y
+
+def get_player_width():
+    for e in world:
+        if e['obj_class']== 'player':
+            return e['texture'].get_width()
+
+def get_player_height():
+    for e in world:
+        if e['obj_class']== 'player':
+            return e['texture'].get_height()
+
+def get_player_x():
+    for e in world:
+        if e['obj_class']== 'player':
+            return e['pos']['x']
+
+def get_player_y():
+    for e in world:
+        if e['obj_class']== 'player':
+            return e['pos']['y']
+
+def get_player_x_and_y():
+    for e in world:
+        if e['obj_class']== 'player':
+            return [e['pos']['x'], e['pos']['y']]
+
+# moves viewport by moving world array content by value argument
+def move_viewport(value):
+    for e in world:
+        e['pos']['x']+= value
+
+# check if distance from player to screen border is lesser than minimum_distance_from_border and moves viewport if true
+def check_distance_from_screen_border():
+    player_x= get_player_x()
+    distance_from_left_border= player_x
+    distance_from_right_border= w- (player_x+ get_player_width())
+
+    if distance_from_left_border<= minimum_distance_from_border:
+        move_viewport(viewport_movement_value)
+    if distance_from_right_border<= minimum_distance_from_border:
+        move_viewport(-viewport_movement_value)
 
 # executes single event from event_queue
 def exec_event(ev):
@@ -86,17 +129,17 @@ def check_keys():
 def prerender():
     check_keys() # check if some binded key has been pressed and do some action/event
     event_handler() # executes events from event_queue
+    check_distance_from_screen_border() # check if player's distance to border is lesser than minimum_distance_from_border and if that is true moves viewport by moving world's content
 
 # check if player still have some moves left
 def check_if_player_lost_because_of_moves_count():
-    # TODO: fix this
     b_player_event_in_queue= False
+    # check if player movement still can change because of events from event_queue with target= 'player'
     for ev in event_queue:
         if ev['target']== 'player':
             b_player_event_in_queue= True
-    # print(b_player_event_in_queue)
 
-    if moves_left<= 0 and b_player_event_in_queue is not True: return True
+    if moves_left<= 0 and b_player_event_in_queue is False: return True
     else: return False
 
 # game loop
@@ -104,6 +147,7 @@ while True:
     clock.tick(fps) # limits fps to value of fps variable
     prerender() # handling hotkeys, event_queue, etc.
     render() # draws objects and background
-    # TODO: finish check_if_player_lost_because_of_moves_count function
-    # if check_if_player_lost_because_of_moves_count:
-    #     sys.exit()
+
+    # check if player lost the game
+    if check_if_player_lost_because_of_moves_count():
+        sys.exit()
