@@ -34,6 +34,7 @@ def draw_world():
     for el in world:
         display.blit(el['texture'], (el['pos']['x'], el['pos']['y']))
 
+# displays how many moves left for player to make
 def show_move_counter():
     counter= font.render(f'Moves: {moves_left}', 1, (49, 228, 201))
     display.blit(counter, (850, 20))
@@ -82,6 +83,28 @@ def get_player_x_and_y():
 def move_viewport(value):
     for e in world:
         e['pos']['x']+= value
+
+# adds hitboxes to every object, should be executed only once
+def add_hitboxes_to_every_obj():
+    for e in world:
+        if e['colidable']== 1 or e['colidable']== -1:
+            e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
+
+# generates hitbox for requested object
+def generate_hitbox(obj_class, obj_texture, x, y):
+    global_rule= hitbox_generation_rules[0]
+    width, height= obj_texture.get_width(), obj_texture.get_height()
+
+    for rule_index in range(1, len(hitbox_generation_rules)):
+        if hitbox_generation_rules[rule_index]['obj_class']== obj_class:
+            global_rule= hitbox_generation_rules[rule_index]
+
+    return {
+            'y_top': eval(global_rule['change']['y_top']),
+            'y_bot': eval(global_rule['change']['y_bot']),
+            'x_left': eval(global_rule['change']['x_left']),
+            'x_right': eval(global_rule['change']['x_right']),
+            }
 
 # check if distance from player to screen border is lesser than minimum_distance_from_border and moves viewport if true
 def check_distance_from_screen_border():
@@ -142,12 +165,14 @@ def check_if_player_lost_because_of_moves_count():
     if moves_left<= 0 and b_player_event_in_queue is False: return True
     else: return False
 
-# game loop
-while True:
-    clock.tick(fps) # limits fps to value of fps variable
-    prerender() # handling hotkeys, event_queue, etc.
-    render() # draws objects and background
+if __name__== '__main__':
+    add_hitboxes_to_every_obj()
+    # game loop
+    while True:
+        clock.tick(fps) # limits fps to value of fps variable
+        prerender() # handling hotkeys, event_queue, etc.
+        render() # draws objects and background
 
-    # check if player lost the game
-    if check_if_player_lost_because_of_moves_count():
-        sys.exit()
+        # check if player lost the game
+        if check_if_player_lost_because_of_moves_count():
+            sys.exit()
