@@ -43,14 +43,14 @@ hitbox_generation_rules= [
 # 'colidable': 1 means true 0 means false -1 means false but generate hitbox
 world= [
         {'pos': {'x': 0, 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 2, 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 3, 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 4, 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 5, 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 6, 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 7, 'y': h- 50- 100}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
-        {'pos': {'x': 0+ textures['grass'].get_width()* 7, 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 1* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 2* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 3* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 4* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 5* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 6* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 7* textures['grass'].get_width(), 'y': h- 50- 100}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 7* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
 
         {'pos': {'x': 0, 'y': h- 34- 64}, 'texture': textures['player_normal1'], 'colidable': 1, 'obj_class': 'player'},
         ]
