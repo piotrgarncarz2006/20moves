@@ -1,25 +1,29 @@
 #!/bin/python3
 
-# this file should be executed from game launcher with proper arguments shuch as window width and height, current map, fps limit, current character, etc.
+# this file should be executed from game launcher with proper arguments shuch as current map, current character, etc.
 
 import pygame as pg
 import os, sys
 from math import *
-from settings import *
+from settings.settings import *
 # only for debuging remove in release
 from pprint import pprint
 
-# TODO: import different maps with if statement
-from maps.map_1 import * # provides world, sources, bg, scale, textures
+# importing map based on cmd arguments
+if sys.argv[1]== '1':
+    from maps.map_1 import * # provides world, sources, bg, scale, textures
+elif sys.argv[1]== '2':
+    from maps.map_2 import * # provides world, sources, bg, scale, textures
+elif sys.argv[1]== '3':
+    from maps.map_3 import * # provides world, sources, bg, scale, textures
 
 pg.init() # allows to use pygame methods
-font= pg.font.SysFont('monospace', 24)
+default_font= pg.font.SysFont(font_family, default_font_size) # default font
+counter_font= pg.font.SysFont(font_family, counter_font_size) # font to be used for move counter
 display= pg.display.set_mode((w, h)) # creates window
+fps= 60 # fps limit, this should not be changed
 clock = pg.time.Clock() # clock to limit fps
-fps= 60 # fps limit
 moves_left= 20 # how many moves can you make
-minimum_distance_from_border= 100 # minimum distance of player to screen border before viewport moves
-viewport_movement_value= 400 # value by which viewport moves when distance from screen border is lesser than minimum_distance_from_border. This value can be negative or positive depending on from which border distance is lesser than minimum_distance_from_border
 
 # every event that changes something on game map located in world list. Format of event_queue: [ { (text) 'action', (text) 'target', (int) 'frames', additional arguments } ] where frames is on how many frames event will execute this values is decremented every frame by event_handler()
 event_queue= []
@@ -36,8 +40,8 @@ def draw_world():
 
 # displays how many moves left for player to make
 def show_move_counter():
-    counter= font.render(f'Moves: {moves_left}', 1, (49, 228, 201))
-    display.blit(counter, (850, 20))
+    counter= counter_font.render(f'{moves_left}', 1, (49, 228, 201))
+    display.blit(counter, (w- 50, 20))
 
 # renders background and objects from world list and displays text
 def render():
@@ -53,6 +57,8 @@ def move(obj_class, speed_x, speed_y):
         if e['obj_class']== obj_class:
             e['pos']['x']+= speed_x
             e['pos']['y']+= speed_y
+            if e['colidable']== 1 or e['colidable']== -1:
+                e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
 
 def get_player_width():
     for e in world:
@@ -83,6 +89,8 @@ def get_player_x_and_y():
 def move_viewport(value):
     for e in world:
         e['pos']['x']+= value
+        if e['colidable']== 1 or e['colidable']== -1:
+            e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
 
 # adds hitboxes to every object, should be executed only once
 def add_hitboxes_to_every_obj():
@@ -90,7 +98,7 @@ def add_hitboxes_to_every_obj():
         if e['colidable']== 1 or e['colidable']== -1:
             e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
 
-# generates hitbox for requested object
+# generates hitbox for requested values
 def generate_hitbox(obj_class, obj_texture, x, y):
     global_rule= hitbox_generation_rules[0]
     width, height= obj_texture.get_width(), obj_texture.get_height()
@@ -105,6 +113,12 @@ def generate_hitbox(obj_class, obj_texture, x, y):
             'x_left': eval(global_rule['change']['x_left']),
             'x_right': eval(global_rule['change']['x_right']),
             }
+
+# checks collision between two objects if collision occurs returns 1 else returns 0
+# types= ['y_top', 'y_bot', 'x_left', 'x_right'] for checking collisions in every direction from obj_one
+def check_collision(obj_one, obj_two, types):
+    #TODO: finish this and use this for movement
+    pass
 
 # check if distance from player to screen border is lesser than minimum_distance_from_border and moves viewport if true
 def check_distance_from_screen_border():

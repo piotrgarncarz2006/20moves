@@ -19,10 +19,9 @@ from pprint import pprint
 
 # load one image with pygame.image.load and scales them using pg.transform.scale
 def load_img(src, scale):
-    img= pg.image.load(src)
-    return pg.transform.scale(img, (img.get_width()* scale, img.get_height()* scale))
+    img= pg.image.load(src) # load img from source to pygame obj type and save it in img variable
+    return pg.transform.scale(img, (img.get_width()* scale, img.get_height()* scale)) # change img width and height
 
-scale= 4 # scale in which draw_world() will draw objects from world list
 bg= (33, 38, 63) # bg of game window when using this map
 
 # sources of images/textures
