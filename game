@@ -119,20 +119,17 @@ def move(obj_class, speed_x, speed_y):
             e['pos']['y']+= speed_y
             if e['colidable']:
                 if speed_y== 0 and speed_x> 0:
-                    colid_element= check_collisions_with_player(['x_right'])
+                    colid_element= check_all_collisions_with_obj(e, ['x_right'])
                     if colid_element!= None:
-                        # e['pos']['x']-= speed_x
                         e['pos']['x']= colid_element['hitbox']['x_left']- e['texture'].get_width()
-                    # while check_collisions_with_player(['x_right']):
-                    #     e['pos']['x']-= speed_x
+                # TODO: add other conditions
             if e['colidable']== 1 or e['colidable']== -1:
                 e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
 
-def check_collisions_with_player(types):
-    player= get_player()
+def check_all_collisions_with_obj(obj, types):
     for e in world:
-        if e!= player:
-            if check_collision(player, e, types):
+        if e!= obj:
+            if check_collision(obj, e, types):
                 return e
 
 # checks collision between two objects if collision occurs returns 1 else returns 0
