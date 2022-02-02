@@ -52,5 +52,6 @@ world= [
         {'pos': {'x': 7* textures['grass'].get_width(), 'y': h- 50- 100+ 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
         {'pos': {'x': 7* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
 
+        # player
         {'pos': {'x': 0, 'y': h- 34- 50}, 'texture': textures['player_normal1'], 'colidable': 1, 'obj_class': 'player'},
         ]

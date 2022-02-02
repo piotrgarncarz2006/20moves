@@ -3,7 +3,7 @@ import configparser
 import sys, os
 filename= f"{os.path.dirname(os.path.realpath(__file__))}/settings.ini"
 config= configparser.ConfigParser()
-config.read(filename)
+config.read(filename) # load config file to configparser
 
 w, h= int(config.get("WINDOW", "w")), int(config.get("WINDOW", "h")) # size of window
 minimum_distance_from_border= int(config.get("WINDOW", "minimum_distance_from_border")) # minimum distance of player to screen border before viewport moves

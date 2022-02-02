@@ -71,6 +71,7 @@ def get_player_y():
         if e['obj_class']== 'player':
             return e['pos']['y']
 
+# returns array that contains player_x and player_y
 def get_player_x_and_y():
     for e in world:
         if e['obj_class']== 'player':
@@ -92,18 +93,24 @@ def move_viewport(value):
 # adds hitboxes to every object, should be executed only once
 def add_hitboxes_to_every_obj():
     for e in world:
+        # colidable== 1 means collisions with this object is possible, colidable== -1 means collisions aren't possible with this object but hitbox will be generated anyways
         if e['colidable']== 1 or e['colidable']== -1:
             e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
 
 # generates hitbox for requested values
 def generate_hitbox(obj_class, obj_texture, x, y):
+    # get default rules for generating hitbox
     global_rule= hitbox_generation_rules[0]
+    # get width of requested obj through its texture
     width, height= obj_texture.get_width(), obj_texture.get_height()
 
+    # loop through every rule in rules except index 0 which is default rules set if none was specified.
     for rule_index in range(1, len(hitbox_generation_rules)):
+        # if requested obj_class matches obj_class for rule change global_rule to rule on this index
         if hitbox_generation_rules[rule_index]['obj_class']== obj_class:
             global_rule= hitbox_generation_rules[rule_index]
 
+    # calculate and return rules for requested object
     return {
             'y_top': eval(global_rule['change']['y_top']),
             'y_bot': eval(global_rule['change']['y_bot']),
@@ -115,20 +122,31 @@ def generate_hitbox(obj_class, obj_texture, x, y):
 def move(obj_class, speed_x, speed_y):
     for e in world:
         if e['obj_class']== obj_class:
+            # change position
             e['pos']['x']+= speed_x
             e['pos']['y']+= speed_y
-            if e['colidable']:
+            # if colidable check collisions with other objects
+            if e['colidable']== 1:
+                # if move right
                 if speed_y== 0 and speed_x> 0:
+                    # get colliding element if no collision colid_element= None
                     colid_element= check_all_collisions_with_obj(e, ['x_right'])
+                    # check if collision occured
                     if colid_element!= None:
+                        # move as close to colid_element in x axis as posible
                         e['pos']['x']= colid_element['hitbox']['x_left']- e['texture'].get_width()
                 # TODO: add other conditions
+
+            # regenerate hitbox for new position
             if e['colidable']== 1 or e['colidable']== -1:
                 e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
 
+# check collisions between selected object and every other object in world array
 def check_all_collisions_with_obj(obj, types):
     for e in world:
+        # if obj is not equal requested object check collisions
         if e!= obj:
+            # if collision occured return colliding element
             if check_collision(obj, e, types):
                 return e
 
