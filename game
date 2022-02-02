@@ -51,15 +51,6 @@ def render():
 
     pg.display.flip() # shows newly rendered elements
 
-# move object from world list
-def move(obj_class, speed_x, speed_y):
-    for e in world:
-        if e['obj_class']== obj_class:
-            e['pos']['x']+= speed_x
-            e['pos']['y']+= speed_y
-            if e['colidable']== 1 or e['colidable']== -1:
-                e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
-
 def get_player_width():
     for e in world:
         if e['obj_class']== 'player':
@@ -84,6 +75,12 @@ def get_player_x_and_y():
     for e in world:
         if e['obj_class']== 'player':
             return [e['pos']['x'], e['pos']['y']]
+
+# returns player object from world array
+def get_player():
+    for e in world:
+        if e['obj_class']== 'player':
+            return e
 
 # moves viewport by moving world array content by value argument
 def move_viewport(value):
@@ -114,11 +111,57 @@ def generate_hitbox(obj_class, obj_texture, x, y):
             'x_right': eval(global_rule['change']['x_right']),
             }
 
+# move object from world list
+def move(obj_class, speed_x, speed_y):
+    for e in world:
+        if e['obj_class']== obj_class:
+            e['pos']['x']+= speed_x
+            e['pos']['y']+= speed_y
+            if e['colidable']:
+                if speed_y== 0 and speed_x> 0:
+                    colid_element= check_collisions_with_player(['x_right'])
+                    if colid_element!= None:
+                        # e['pos']['x']-= speed_x
+                        e['pos']['x']= colid_element['hitbox']['x_left']- e['texture'].get_width()
+                    # while check_collisions_with_player(['x_right']):
+                    #     e['pos']['x']-= speed_x
+            if e['colidable']== 1 or e['colidable']== -1:
+                e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
+
+def check_collisions_with_player(types):
+    player= get_player()
+    for e in world:
+        if e!= player:
+            if check_collision(player, e, types):
+                return e
+
 # checks collision between two objects if collision occurs returns 1 else returns 0
 # types= ['y_top', 'y_bot', 'x_left', 'x_right'] for checking collisions in every direction from obj_one
 def check_collision(obj_one, obj_two, types):
-    #TODO: finish this and use this for movement
-    pass
+    obj_one_hitbox= obj_one['hitbox']
+    obj_two_hitbox= obj_two['hitbox']
+    if 'x_right' in types:
+        obj_one_right= obj_one_hitbox['x_right']
+        obj_one_top= obj_one_hitbox['y_top']
+        obj_one_bot= obj_one_hitbox['y_bot']
+
+        obj_two_left= obj_two_hitbox['x_left']
+        obj_two_right= obj_two_hitbox['x_right']
+        obj_two_top= obj_two_hitbox['y_top']
+        obj_two_bot= obj_two_hitbox['y_bot']
+
+        b_x_collision= obj_one_right>= obj_two_left and obj_one_right< obj_two_right
+        b_y_collision= obj_one_top<= obj_two_bot and obj_one_bot>= obj_two_top
+
+        if b_x_collision and b_y_collision:
+            return True
+    if 'x_left' in types:
+        pass
+    if 'y_top' in types:
+        pass
+    if 'y_bot' in types:
+        pass
+    return False
 
 # check if distance from player to screen border is lesser than minimum_distance_from_border and moves viewport if true
 def check_distance_from_screen_border():
@@ -157,10 +200,10 @@ def check_keys():
             if event.key== pg.K_d:
                 # i have no idea why this globals() is necessary but if you remove it game will crash
                 globals()['moves_left']-= 1
-                event_queue.append({'action': 'mv', 'target': 'player', 'frames': 20, 'x': 12.4, 'y': 0})
+                event_queue.append({'action': 'mv', 'target': 'player', 'frames': 20, 'x': player_speed, 'y': 0})
             if event.key== pg.K_a:
                 globals()['moves_left']-= 1
-                event_queue.append({'action': 'mv', 'target': 'player', 'frames': 20, 'x': -12.4, 'y': 0})
+                event_queue.append({'action': 'mv', 'target': 'player', 'frames': 20, 'x': -player_speed, 'y': 0})
 
 # executes before render function
 def prerender():

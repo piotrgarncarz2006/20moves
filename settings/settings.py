@@ -12,3 +12,5 @@ font_family= config.get("FONT", "font_family") # font family that will be used f
 default_font_size= int(config.get("FONT", "default_font_size")) # default font size for interface etc.
 counter_font_size= int(config.get("FONT", "counter_font_size")) # size of font that will be used to display how many moves left
 scale= int(config.get("WINDOW", "scale")) # scale in which draw_world() will draw objects from world list
+gravity= float(config.get("GAME", "gravity")) # gravity is used for calculating speed of falling objects
+player_speed= float(config.get("GAME", "player_speed")) # value of player's movement per frame
