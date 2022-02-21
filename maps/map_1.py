@@ -60,6 +60,8 @@ world= [
         {'pos': {'x': 8* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
         {'pos': {'x': 9* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
         {'pos': {'x': 10* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 12* textures['grass'].get_width(), 'y': h- 50- 100}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 13* textures['grass'].get_width(), 'y': h- 50- 100}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
 
         # player
         {'pos': {'x': 200, 'y': h- textures['player_normal1'].get_height()- textures['grass'].get_height()+ 1}, 'texture': textures['player_normal1'], 'colidable': 1, 'obj_class': 'player'},
