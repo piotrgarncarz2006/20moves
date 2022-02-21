@@ -26,8 +26,9 @@ bg= (33, 38, 63) # bg of game window when using this map
 
 # sources of images/textures
 sources= {
-        'grass': '/home/piotr/Py/20moves/assets/img/grass.png',
-        'player_normal1': '/home/piotr/Py/20moves/assets/img/player_normal1.png',
+        'grass': '/home/piotr/Programming/20moves/assets/img/grass.png',
+        'key': '/home/piotr/Programming/20moves/assets/img/key.png',
+        'player_normal1': '/home/piotr/Programming/20moves/assets/img/player_normal1.png',
         }
 
 # loads images from sources
@@ -51,7 +52,18 @@ world= [
         {'pos': {'x': 6* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
         {'pos': {'x': 7* textures['grass'].get_width(), 'y': h- 50- 100+ 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
         {'pos': {'x': 7* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 1* textures['grass'].get_width(), 'y': h- 50- 100+ 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+
+        {'pos': {'x': 180, 'y': h- 240}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 180+ textures['grass'].get_width(), 'y': h- 240}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+
+        {'pos': {'x': 8* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 9* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
+        {'pos': {'x': 10* textures['grass'].get_width(), 'y': h- 50}, 'texture': textures['grass'], 'colidable': 1, 'obj_class': 'grass'},
 
         # player
-        {'pos': {'x': 0, 'y': h- 34- 50}, 'texture': textures['player_normal1'], 'colidable': 1, 'obj_class': 'player'},
+        {'pos': {'x': 200, 'y': h- textures['player_normal1'].get_height()- textures['grass'].get_height()+ 1}, 'texture': textures['player_normal1'], 'colidable': 1, 'obj_class': 'player'},
+
+        # key
+        {'pos': {'x': 280, 'y': h- 80}, 'texture': textures['key'], 'colidable': -1, 'obj_class': 'key'},
         ]

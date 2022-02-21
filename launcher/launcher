@@ -1,0 +1,7 @@
+import pygame as pg
+import sys, os
+
+bg= (50, 50, 50)
+# list of all elements of interface except bg
+interface= [
+        ]

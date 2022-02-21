@@ -3,7 +3,7 @@
 # this file should be executed from game launcher with proper arguments shuch as current map, current character, etc.
 
 import pygame as pg
-import os, sys
+import os, sys, copy
 from math import *
 from settings.settings import *
 # only for debuging remove in release
@@ -16,6 +16,11 @@ elif sys.argv[1]== '2':
     from maps.map_2 import * # provides world, sources, bg, scale, textures
 elif sys.argv[1]== '3':
     from maps.map_3 import * # provides world, sources, bg, scale, textures
+
+# inventory info
+collected_keys= 0
+collected_coins= 0
+collected_coins_total= 0
 
 pg.init() # allows to use pygame methods
 default_font= pg.font.SysFont(font_family, default_font_size) # default font
@@ -122,9 +127,14 @@ def generate_hitbox(obj_class, obj_texture, x, y):
 def move(obj_class, speed_x, speed_y):
     for e in world:
         if e['obj_class']== obj_class:
-            # change position
-            e['pos']['x']+= speed_x
-            e['pos']['y']+= speed_y
+            e_prev= {
+                    'pos': copy.deepcopy(e['pos']),
+                    'texture': e['texture'],
+                    'colidable': e['colidable'],
+                    'colidable': e['obj_class'],
+                    'hitbox': generate_hitbox(e, e['texture'], e['pos']['x'], e['pos']['y']),
+                    }
+            collision_occured= False
             # if colidable check collisions with other objects
             if e['colidable']== 1:
                 # if move right
@@ -135,47 +145,118 @@ def move(obj_class, speed_x, speed_y):
                     if colid_element!= None:
                         # move as close to colid_element in x axis as posible
                         e['pos']['x']= colid_element['hitbox']['x_left']- e['texture'].get_width()
-                # TODO: add other conditions
+                        collision_occured= True
+                # if move left
+                elif speed_y== 0 and speed_x< 0:
+                    # get colliding element if no collision colid_element= None
+                    colid_element= check_all_collisions_with_obj(e, ['x_left'])
+                    # check if collision occured
+                    if colid_element!= None:
+                        # move as close to colid_element in x axis as posible
+                        e['pos']['x']= colid_element['hitbox']['x_right']
+                        collision_occured= True
+                # if move down
+                elif speed_y> 0 and speed_x== 0:
+                    # get colliding element if no collision colid_element= None
+                    colid_element= check_all_collisions_with_obj(e, ['y_bot'])
+                    # check if collision occured
+                    if colid_element!= None:
+                        # move as close to colid_element in x axis as posile
+                        e['pos']['y']= colid_element['hitbox']['y_top']- e['texture'].get_height()- 1
+                        collision_occured= True
+                # if move up
+                elif speed_y< 0 and speed_x== 0:
+                    # get colliding element if no collision colid_element= None
+                    colid_element= check_all_collisions_with_obj(e, ['y_top'])
+                    # check if collision occured
+                    if colid_element!= None:
+                        # move as close to colid_element in x axis as posile
+                        e['pos']['y']= colid_element['hitbox']['y_bot']
+                        collision_occured= True
+
+            # if collision hasn't occured just move normaly
+            if collision_occured is not True:
+                # change position
+                e['pos']['x']+= speed_x
+                e['pos']['y']+= speed_y
 
             # regenerate hitbox for new position
             if e['colidable']== 1 or e['colidable']== -1:
                 e['hitbox']= generate_hitbox(e['obj_class'], e['texture'], e['pos']['x'], e['pos']['y'])
 
 # check collisions between selected object and every other object in world array
-def check_all_collisions_with_obj(obj, types):
+def check_all_collisions_with_obj(obj, types): # for all collisions: types= ['x_right', 'x_left', 'x_top', 'x_bot']
     for e in world:
         # if obj is not equal requested object check collisions
-        if e!= obj:
+        if e!= obj and e['colidable']== 1:
             # if collision occured return colliding element
             if check_collision(obj, e, types):
                 return e
+
+# check collisions between selected object and every other object in world array and return every colliding object
+def return_all_collisions_with_obj(obj, types): # for all collisions: types= ['x_right', 'x_left', 'x_top', 'x_bot']
+    ret_val= []
+    for e in world:
+        # if obj is not equal requested object check collisions
+        if e!= obj and e['colidable']== 1:
+            # if collision occured return colliding element
+            if check_collision(obj, e, types):
+                ret_val.append(e)
+    return ret_val
+
+# checks and handles gravity for player
+def gravity_handler():
+    # player is currently moving
+    event_queue_contains_player= False
+    for queue in event_queue:
+        # move player action is inside event_queue 
+        if queue['target']== 'player':
+            event_queue_contains_player= True
+
+    # if event_queue_contains_player is not True:
+    collision= check_all_collisions_with_obj(get_player(), ['y_bot'])
+    if collision is not True and event_queue_contains_player is not True:
+        event_queue.append({'action': 'mv', 'target': 'player', 'frames': 1, 'x': 0, 'y': gravity})
 
 # checks collision between two objects if collision occurs returns 1 else returns 0
 # types= ['y_top', 'y_bot', 'x_left', 'x_right'] for checking collisions in every direction from obj_one
 def check_collision(obj_one, obj_two, types):
     obj_one_hitbox= obj_one['hitbox']
     obj_two_hitbox= obj_two['hitbox']
+    obj_one_right= obj_one_hitbox['x_right']
+    obj_one_left= obj_one_hitbox['x_left']
+    obj_one_top= obj_one_hitbox['y_top']
+    obj_one_bot= obj_one_hitbox['y_bot']
+
+    obj_two_left= obj_two_hitbox['x_left']
+    obj_two_right= obj_two_hitbox['x_right']
+    obj_two_top= obj_two_hitbox['y_top']
+    obj_two_bot= obj_two_hitbox['y_bot']
+
     if 'x_right' in types:
-        obj_one_right= obj_one_hitbox['x_right']
-        obj_one_top= obj_one_hitbox['y_top']
-        obj_one_bot= obj_one_hitbox['y_bot']
-
-        obj_two_left= obj_two_hitbox['x_left']
-        obj_two_right= obj_two_hitbox['x_right']
-        obj_two_top= obj_two_hitbox['y_top']
-        obj_two_bot= obj_two_hitbox['y_bot']
-
         b_x_collision= obj_one_right>= obj_two_left and obj_one_right< obj_two_right
         b_y_collision= obj_one_top<= obj_two_bot and obj_one_bot>= obj_two_top
 
         if b_x_collision and b_y_collision:
             return True
     if 'x_left' in types:
-        pass
+        b_x_collision= obj_one_left<= obj_two_right and obj_one_left> obj_two_left
+        b_y_collision= obj_one_top<= obj_two_bot and obj_one_bot>= obj_two_top
+
+        if b_x_collision and b_y_collision:
+            return True
     if 'y_top' in types:
-        pass
+        b_x_collision= obj_one_left>= obj_two_left and obj_one_left<= obj_two_right or obj_two_left>= obj_one_left and obj_two_left<= obj_one_right
+        b_y_collision= obj_one_top<= obj_two_bot and obj_one_bot>= obj_two_bot
+
+        if b_x_collision and b_y_collision:
+            return True
     if 'y_bot' in types:
-        pass
+        b_x_collision= obj_one_left>= obj_two_left and obj_one_left<= obj_two_right or obj_two_left>= obj_one_left and obj_two_left<= obj_one_right
+        b_y_collision= obj_one_bot>= obj_two_top- 1 and obj_one_top<= obj_two_top
+
+        if b_x_collision and b_y_collision:
+            return True
     return False
 
 # check if distance from player to screen border is lesser than minimum_distance_from_border and moves viewport if true
@@ -219,11 +300,29 @@ def check_keys():
             if event.key== pg.K_a:
                 globals()['moves_left']-= 1
                 event_queue.append({'action': 'mv', 'target': 'player', 'frames': 20, 'x': -player_speed, 'y': 0})
+            if event.key== pg.K_SPACE:
+                globals()['moves_left']-= 1
+                event_queue.append({'action': 'mv', 'target': 'player', 'frames': 20, 'x': 0, 'y': -player_speed})
+
+# checks collisions with collectable items such as keys, coins, etc...
+def check_collectables():
+    delete_marks= []
+    for e in world:
+        if e['obj_class']== 'key' and e['colidable']== 1 or e['obj_class']== 'key' and e['colidable']== -1:
+            if get_player() in return_all_collisions_with_obj(e, ['x_left', 'x_right', 'y_top', 'y_bot']):
+                delete_marks.append(e)
+                # i have no idea why this globals() is necessary but if you remove it game will crash
+                globals()['collected_keys']+= 1
+                print('Player collected key, collected_keys=', collected_keys)
+    for e in delete_marks:
+        world.remove(e)
 
 # executes before render function
 def prerender():
     check_keys() # check if some binded key has been pressed and do some action/event
+    gravity_handler() # handles object's gravity
     event_handler() # executes events from event_queue
+    check_collectables() # checks collisions with collectable items such as keys, coins, etc...
     check_distance_from_screen_border() # check if player's distance to border is lesser than minimum_distance_from_border and if that is true moves viewport by moving world's content
 
 # check if player still have some moves left
